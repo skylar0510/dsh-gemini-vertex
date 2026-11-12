@@ -1,6 +1,6 @@
 {
   "name": "dsh-gemini-vertex",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Gemini on Google Vertex AI for DeepSeek Harness: a host-only provider with API-key or service-account auth, streaming, native tool calls and thought-signature replay.",
   "repository": {
     "type": "git",

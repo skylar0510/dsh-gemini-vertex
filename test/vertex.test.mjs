@@ -32,6 +32,20 @@ async function startMock(state) {
       response.end(JSON.stringify({ totalTokens: 42 }))
       return
     }
+    if (request.url.includes(':streamGenerateContent') && request.url.includes('overflow-model')) {
+      response.writeHead(400, { 'content-type': 'application/json' })
+      response.end(
+        JSON.stringify({
+          error: {
+            code: 400,
+            message:
+              'The input token count (1048716) exceeds the maximum number of tokens allowed (1048576).',
+            status: 'INVALID_ARGUMENT',
+          },
+        }),
+      )
+      return
+    }
     if (request.url.includes(':streamGenerateContent')) {
       response.writeHead(200, { 'content-type': 'text/event-stream' })
       response.write(`data: ${JSON.stringify({ candidates: [{ content: { role: 'model', parts: [{ text: 'Hel' }] } }] })}\n\n`)
@@ -184,6 +198,36 @@ test('an API key is sent as x-goog-api-key and no OAuth call happens', async () 
     const streamRequest = state.requests.find((entry) => entry.url.includes(':streamGenerateContent'))
     assert.equal(streamRequest.authorization, undefined)
     assert.equal(state.requests.some((entry) => entry.url === '/token'), false)
+  } finally {
+    await mock.close()
+  }
+})
+
+test('a Vertex token-budget 400 maps to CONTEXT_WINDOW_EXCEEDED', async () => {
+  const state = { requests: [] }
+  const mock = await startMock(state)
+  try {
+    const options = resolveOptions({
+      project: 'test-project',
+      auth: 'service-account',
+      serviceAccountJson: JSON.stringify(serviceAccount(mock.port)),
+      baseURL: `http://127.0.0.1:${mock.port}`,
+      model: 'overflow-model',
+      proxy: 'direct',
+    })
+    const adapter = makeAdapter(options)
+    await assert.rejects(
+      async () => {
+        for await (const _chunk of adapter.stream({
+          model: 'overflow-model',
+          messages: [userMessage],
+          signal: AbortSignal.timeout(15000),
+        })) {
+          // drain
+        }
+      },
+      (error) => error.code === 'CONTEXT_WINDOW_EXCEEDED' && /exceeds the maximum number of tokens/.test(error.message),
+    )
   } finally {
     await mock.close()
   }

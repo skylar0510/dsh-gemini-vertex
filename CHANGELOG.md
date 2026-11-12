@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.0.1
+
+- Map Vertex's token-budget 400 (`The input token count (N) exceeds the maximum
+  number of tokens allowed (M).`) to `CONTEXT_WINDOW_EXCEEDED`. dsh-llm only
+  recognises context-window wording, so this error used to surface as an
+  unretryable `INVALID_REQUEST` and automatic compaction could not recover.
+- Offline test for that mapping.
+
 ## 1.0.0
 
 First release.

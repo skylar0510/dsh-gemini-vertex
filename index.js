@@ -898,12 +898,21 @@ function usageOf(raw) {
 }
 
 /** Classify a Vertex error into the harness's stable failure codes. */
+/**
+ * Vertex reports an exhausted input budget as a plain 400 that never says
+ * "context": `The input token count (N) exceeds the maximum number of tokens
+ * allowed (M).` dsh-llm's matcher only knows context-window wording, so without
+ * this the harness would see an unretryable INVALID_REQUEST instead of the
+ * overflow signal automatic compaction recovers from.
+ */
+const VERTEX_TOKEN_BUDGET_EXCEEDED = /\b(?:input|prompt)\s+token\s+count\b.{0,64}?\bexceed|\bexceeds\s+the\s+maximum\s+number\s+of\s+tokens\b/iu
+
 function failureOf(status, detail) {
   let code
   if (status === 401 || status === 403) code = 'AUTH'
   else if (isQuotaExceededError(detail)) code = 'QUOTA'
   else if (status === 429) code = 'RATE_LIMIT'
-  else if (isContextWindowExceededError(detail)) code = 'CONTEXT_WINDOW_EXCEEDED'
+  else if (isContextWindowExceededError(detail) || VERTEX_TOKEN_BUDGET_EXCEEDED.test(detail)) code = 'CONTEXT_WINDOW_EXCEEDED'
   else if (status === 400 || status === 413) code = 'INVALID_REQUEST'
   else if (status !== undefined && status >= 500) code = 'SERVER'
   else code = status === undefined ? 'SERVER' : `HTTP_${status}`

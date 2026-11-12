@@ -2,6 +2,14 @@
   "name": "dsh-gemini-vertex",
   "version": "1.0.0",
   "description": "Gemini on Google Vertex AI for DeepSeek Harness: a host-only provider with API-key or service-account auth, streaming, native tool calls and thought-signature replay.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/skylar0510/dsh-gemini-vertex.git"
+  },
+  "homepage": "https://github.com/skylar0510/dsh-gemini-vertex#readme",
+  "bugs": {
+    "url": "https://github.com/skylar0510/dsh-gemini-vertex/issues"
+  },
   "license": "MIT",
   "type": "module",
   "main": "index.js",
@@ -52,13 +60,27 @@
     "@deepseek-ai/schemastery": "^3.19.0"
   },
   "peerDependenciesMeta": {
-    "@deepseek-ai/cordis": { "optional": true },
-    "@deepseek-ai/cosmokit": { "optional": true },
-    "@deepseek-ai/dsh-attachment": { "optional": true },
-    "@deepseek-ai/dsh-credentials": { "optional": true },
-    "@deepseek-ai/dsh-launch-environment": { "optional": true },
-    "@deepseek-ai/dsh-llm": { "optional": true },
-    "@deepseek-ai/schemastery": { "optional": true }
+    "@deepseek-ai/cordis": {
+      "optional": true
+    },
+    "@deepseek-ai/cosmokit": {
+      "optional": true
+    },
+    "@deepseek-ai/dsh-attachment": {
+      "optional": true
+    },
+    "@deepseek-ai/dsh-credentials": {
+      "optional": true
+    },
+    "@deepseek-ai/dsh-launch-environment": {
+      "optional": true
+    },
+    "@deepseek-ai/dsh-llm": {
+      "optional": true
+    },
+    "@deepseek-ai/schemastery": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@deepseek-ai/cordis": "4.1.0",

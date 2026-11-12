@@ -1,0 +1,24 @@
+# Bundle patch for dsh-gemini-vertex.
+#
+# Host-only: this package registers one LLM adapter and ships no browser
+# companion, so enabling it cannot affect the web app's boot. Every
+# installation supplies its project and auth in the profile patch layer:
+#
+#   - id: llm-gemini-vertex
+#     name: "dsh-gemini-vertex"
+#     config:
+#       project: "<your-google-cloud-project>"
+#       auth: service-account
+#       serviceAccountFile: "~/.config/gcloud/vertex-sa.json"
+- insert:
+    - id: llm-gemini-vertex
+      name: "dsh-gemini-vertex"
+      config:
+        auth: auto
+        apiKeyEnv: GOOGLE_VERTEX_API_KEY
+        location: global
+        model: gemini-4-argon
+        modelName: Gemini 4 Argon
+        contextWindow: 1048576
+        maxTokens: 65536
+        thinkingLevel: "off"

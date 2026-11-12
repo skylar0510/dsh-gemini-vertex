@@ -1,5 +1,7 @@
 # dsh-gemini-vertex
 
+English | [中文](README.zh.md)
+
 Gemini on **Google Vertex AI** for [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness).
 
 A **host-only** provider bundle: it registers one `gemini-vertex` route and ships no
